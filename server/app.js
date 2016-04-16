@@ -31,16 +31,22 @@ mongoose.connection.on('error', function(err) {
 // Setup server
 let app = express();
 let server = require('http').createServer(app);
-let socketio = require('socket.io')(server, {
-  serveClient: config.env !== 'production',
-  path: '/socket.io-client'
-});
-require('./config/socketio')(socketio);
 require('./config/express')(app);
 require('./routes')(app);
 
-server.listen(config.port, config.ip, function () {
-  console.info(`Express server listening on ${config.port}, in ${app.get('env')} mode`);
-});
+
+function startServer() {
+  server.listen(config.port, config.ip, function () {
+    console.info(`Express server listening on ${config.port}, in ${app.get('env')} mode`);
+  });
+}
+
+if(config.seedDb) {
+  require('./config/seed')(function(){
+    startServer();
+  });
+} else {
+  startServer();
+}
 
 exports = module.exports = app;

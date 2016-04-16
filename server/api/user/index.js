@@ -1,4 +1,4 @@
-'use strict';
+  'use strict';
 
 var express = require('express');
 var controller = require('./user.controller');
@@ -9,10 +9,9 @@ let auth = AuthService();
 var router = express.Router();
 
 router.get('/', auth.hasRole('admin'), controller.index);
-router.delete('/:id', auth.hasRole('admin'), controller.destroy);
+router.get('/no-connections', auth.isAuthenticated(), controller.displayUsersWithoutConnections)
 router.get('/me', auth.isAuthenticated(), controller.me);
-router.put('/:id/password', auth.isAuthenticated(), controller.changePassword);
-router.get('/:id', auth.isAuthenticated(), controller.show);
 router.post('/', controller.create);
+router.post('/connect/:id', auth.isAuthenticated(), controller.connect);
 
 module.exports = router;

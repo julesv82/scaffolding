@@ -1,74 +1,47 @@
 'use strict';
+let expect = require('chai').expect;
+let app = require('../../app').app;
+let User = require('./user.model');
+let seed = require('../../config/seed');
 
-var should = require('should');
-var app = require('../../app').app;
-var User = require('./user.model');
-var allowedRoles = require('../../../shared/config').allowedRoles;
-
-var user = new User({
-  provider: 'local',
+let user = new User({
+  _id: 7,
   name: 'Fake User',
   email: 'test@test.com',
-  password: 'password'
+  password: 'password',
+  role: 'regularUser'
 });
 
 describe('User Model', function() {
-  before(function(done) {
-    // Clear users before testing
-    User.remove().exec().then(function() {
-      done();
-    });
-  });
-
-  afterEach(function(done) {
-    User.remove().exec().then(function() {
-      done();
-    });
-  });
-
-  it('should begin with no users', function(done) {
-    User.find({}, function(err, users) {
-      users.should.have.length(0);
-      done();
-    });
-  });
-
-  it('should fail when saving a duplicate user', function(done) {
-    user.save(function() {
-      var userDup = new User(user);
-      userDup.save(function(err) {
-        should.exist(err);
-        done();
-      });
-    });
-  });
 
   it('should fail when saving without an email', function(done) {
     user.email = '';
     user.save(function(err) {
-      should.exist(err);
+      expect(err).to.exist;
       done();
     });
   });
 
   it("should authenticate user if password is valid", function() {
-    return user.authenticate('password').should.be.true;
+    expect(user.authenticate('password')).to.be.true;
   });
 
   it("should not authenticate user if password is invalid", function() {
-    return user.authenticate('blah').should.not.be.true;
+    expect(user.authenticate('blah')).to.be.false;
   });
 
-	it("should default user role to guest", function(){
-		user.should.have.property('roles').with.lengthOf(1);
-		user.roles.should.be.instanceof(Array);
-		return user.roles.should.containEql(allowedRoles.guest);
-	});
-
-	it("should not be admin", function(){
-		user.should.have.property('roles').with.lengthOf(1);
-		user.roles.should.be.instanceof(Array);
-		return user.roles.should.not.containEql(allowedRoles.admin);
+	it("should only allow user role to be regularUser or admin", function(done){
+    let newUser = {
+      name: 'John Egbert',
+      email: 'johne@test.com',
+      password: 'password',
+      role: 'foobar'
+    };
+    newUser = new User(newUser);
+    newUser.save(function(err, data){
+      expect(err).to.exist;
+      done();
+    })
 	});
 
 });

@@ -1,11 +1,12 @@
 'use strict';
 
 var User = require('./user.model');
-var AuthService = require('../../auth/auth.service');
-
-var auth = AuthService();
+var auth = require('../../auth/auth.service')();
+let async = require('async');
+let _ = require('lodash');
 
 var validationError = function(res, err) {
+  console.log(err);
   return res.status(422).json(err);
 };
 
@@ -14,10 +15,34 @@ var validationError = function(res, err) {
  * restriction: 'admin'
  */
 exports.index = function(req, res) {
-  User.find({}, '-salt -hashedPassword', function (err, users) {
-    if(err) return res.status(500).send(err);
-    res.status(200).json(users);
-  });
+  User.find({
+    _id: {
+      $ne: req.user._id
+    }
+  })
+    .populate('connections', 'name email')
+    .select('-salt -hashedPassword')
+    .exec(function (err, users) {
+      if(err) return res.status(500).send(err);
+      res.status(200).json(users);
+    });
+};
+
+/**
+ * Get list of users
+ * normal users
+ */
+exports.displayUsersWithoutConnections = function(req, res) {
+  User.find({
+    _id: {
+      $ne: req.user._id
+    }
+  })
+    .select('-salt -hashedPassword -connections -email_connections')
+    .exec(function (err, users) {
+      if(err) return res.status(500).send(err);
+      res.status(200).json(users);
+    });
 };
 
 /**
@@ -25,59 +50,49 @@ exports.index = function(req, res) {
  */
 exports.create = function (req, res, next) {
   var newUser = new User(req.body);
-  newUser.provider = 'local';
-  // note - if creating new user need to write logic to save role/s in user record - JV
+  newUser.role = 'regularUser';
   newUser.save(function(err, user) {
     if (err) return validationError(res, err);
     var token = auth.signToken(user._id);
+    user = user.getSafeUserObject(user);
     res.json({ token: token });
   });
 };
 
-/**
- * Get a single user
- */
-exports.show = function (req, res, next) {
-  var userId = req.params.id;
+exports.connect = function(req, res, next) {
+  let id = req.params.id;
 
-  User.findById(userId, function (err, user) {
-    if (err) return next(err);
-    if (!user) return res.status(401).send('Unauthorized');
-    res.json(user.profile);
-  });
-};
-
-/**
- * Deletes a user
- * restriction: 'admin'
- */
-exports.destroy = function(req, res) {
-  User.findByIdAndRemove(req.params.id, function(err, user) {
-    if(err) return res.status(500).send(err);
-    return res.status(204).send('No Content');
-  });
-};
-
-/**
- * Change a users password
- */
-exports.changePassword = function(req, res, next) {
-  var userId = req.user._id;
-  var oldPass = String(req.body.oldPassword);
-  var newPass = String(req.body.newPassword);
-
-  User.findById(userId, function (err, user) {
-    if(user.authenticate(oldPass)) {
-      user.password = newPass;
-      user.save(function(err) {
-        if (err) return validationError(res, err);
-        res.status(200).send('OK');
+  async.waterfall([
+    function(callback){
+      User.findByIdAndUpdate(req.user._id,
+        { $push: {"connections": id }},
+        { safe: true, upsert: true }, function(err, model) {
+          if(err) {
+            return callback(err)
+          }
+          callback();
       });
-    } else {
-      res.status(403).send('Forbidden');
+    },
+    function(callback){
+      User.findByIdAndUpdate(id,
+        { $push: {"connections": req.user._id }},
+        { safe: true, upsert: true }, function(err, model) {
+         if(err) {
+          return callback(err)
+         }
+          callback();
+      });
     }
+  ],
+  function(err){
+    if(err) {
+      res.status(500).send(err);
+    } else {
+      res.status(200).send({});
+    }
+
   });
-};
+}
 
 /**
  * Get my info
@@ -86,7 +101,10 @@ exports.me = function(req, res, next) {
   var userId = req.user._id;
   User.findOne({
     _id: userId
-  }, '-salt -hashedPassword', function(err, user) { // don't ever give out the password or salt
+  })
+  .populate('connections', 'name _id email')
+  .select('-salt -hashedPassword -token -email_connections')
+  .exec(function(err, user) { // don't ever give out the password or salt
     if (err) return next(err);
     if (!user) return res.status(401).send('Unauthorized');
     res.json(user);

@@ -1,0 +1,25 @@
+<div>
+
+  <section>
+    <h1>Login</h1>
+  </section>
+
+  <form name="form" ng-submit="login.login(form)" role="form">
+
+    <div ng-show="login.errors">{{login.errors}}</div>
+    <div>
+      <label for="username">Email</label>
+      <input type="email" name="email" id="username" ng-model="login.user.email" required />
+    </div>
+
+    <div>
+      <label for="password">Password</label>
+      <input type="password" name="password" id="password" ng-model="login.user.password" required />
+    </div>
+
+    <div>
+      <button type="submit">Sign in</button>
+    </div>
+
+  </form>
+</div>

@@ -42,12 +42,12 @@ module.exports = function() {
   /**
    * Checks if the user role meets the minimum requirements of the route
    */
-  function hasRole(isAdmin) {
+  function hasRole(role) {
 
     return compose()
       .use(isAuthenticated())
       .use(function(req, res, next) {
-        if (isAdmin) {
+        if (req.user.role === role) {
           next();
         } else {
           res.status(403).end();
@@ -62,20 +62,9 @@ module.exports = function() {
     return jwt.sign({ _id: id }, config.secrets.session, { expiresInMinutes: 60*5 });
   }
 
-  /**
-   * Set token cookie directly for oAuth strategies
-   */
-  function setTokenCookie(req, res) {
-    if (!req.user) return res.status(404);
-    var token = signToken(req.user._id, req.user.role);
-    res.cookie('token', JSON.stringify(token));
-    res.redirect('/');
-  }
-
   return {
     isAuthenticated: isAuthenticated,
     hasRole: hasRole,
-    signToken: signToken,
-    setTokenCookie: setTokenCookie
+    signToken: signToken
   }
 };

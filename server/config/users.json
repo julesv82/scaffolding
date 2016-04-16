@@ -1,0 +1,50 @@
+[
+  {
+    "name": "John Smith",
+    "email": "john.smith@test.com",
+    "role": "regularUser",
+    "password": "johnsmith2016",
+    "email_connections": ["jane.smith@test.com", "hilary.clinton@test.com", "mo.ali@test.com"],
+    "connections": []
+  },
+  {
+    "name": "Jane Smith",
+    "email": "jane.smith@test.com",
+    "role": "regularUser",
+    "password": "janesmith2016",
+    "email_connections": ["john.smith@test.com", "hilary.clinton@test.com"],
+    "connections": []
+  },
+  {
+    "name": "Hilary Clinton",
+    "email": "hilary.clinton@test.com",
+    "role": "regularUser",
+    "password": "hilaryclinton2016",
+    "email_connections": ["jane.smith@test.com", "john.smith@test.com"],
+    "connections": []
+  },
+  {
+    "name": "Mohammed Ali",
+    "email": "mo.ali@test.com",
+    "role": "regularUser",
+    "password": "moali2016",
+    "email_connections": ["saul.goodman@test.com"],
+    "connections": []
+  },
+  {
+    "name": "Saul Goodman",
+    "email": "saul.goodman@test.com",
+    "role": "admin",
+    "password": "saulgoodman2016",
+    "email_connections": ["mo.ali@test.com"],
+    "connections": []
+  },
+  {
+    "name": "Walter White",
+    "email": "walter.white@test.com",
+    "role": "admin",
+    "password": "walterwhite2016",
+    "email_connections": [],
+    "connections": []
+  }
+]

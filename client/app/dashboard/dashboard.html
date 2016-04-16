@@ -1,0 +1,27 @@
+<h1>Dashboard</h1>
+<h5 ng-show="dashboard.error">{{dashboard.error}}</h5>
+<h4>You are connected to:</h4>
+<ul>
+  <li ng-repeat="connection in dashboard.currentUser.connections">
+    <ul>
+      <li>{{connection.name}}</li>
+      <li>{{connection.email}}</li>
+    </ul>
+  </li>
+</ul>
+<h4>Registered Users</h4>
+<ul>
+  <li ng-repeat="user in dashboard.users track by $index">
+    <ul>
+      <li>{{user.name}}</li>
+      <li ng-show="user.connections" ng-repeat="connection in user.connections">
+        Is connected to:
+        <ul>
+          <li>{{connection.name}}</li>
+          <li>{{connection.email}}
+        </ul>
+      </li>
+      <a ng-hide="dashboard.isConnected(user._id)" ng-click="dashboard.connect(user._id)">Connect</a>
+    </ul>
+  </li>
+</ul>

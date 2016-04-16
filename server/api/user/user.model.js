@@ -1,23 +1,28 @@
 'use strict';
 
-var mongoose = require('mongoose');
-var Schema = mongoose.Schema;
-var crypto = require('crypto');
-var dateFormat = require('dateformat');
+let mongoose = require('mongoose');
+let Schema = mongoose.Schema;
+let crypto = require('crypto');
+let dateFormat = require('dateformat');
+let validator = require('validator');
+let _ = require('lodash');
 
-var schemaOptions = {
+let schemaOptions = {
   toJSON: {
     getters: true
   }
 };
 
-var UserSchema = new Schema({
-  id: String, // samAccountName
+let UserSchema = new Schema({
   name: String,
   email: { type: String, lowercase: true },
-  isAdmin: Boolean,
+  role: {
+    type: String,
+    enum: ['regularUser', 'admin']
+  },
+  email_connections: [String],
+  connections: [{ type: Schema.Types.ObjectId, ref: 'User' }],
   hashedPassword: String,
-  image: String,
   salt: String
 }, schemaOptions);
 
@@ -35,15 +40,6 @@ UserSchema
     return this._password;
   });
 
-// Public profile information
-UserSchema
-  .virtual('profile')
-  .get(function() {
-    return {
-      'name': this.name,
-      'roles': this.roles
-    };
-  });
 
 // Non-sensitive info we'll be putting in the token
 UserSchema
@@ -51,7 +47,7 @@ UserSchema
   .get(function() {
     return {
       '_id': this._id,
-      'isAdmin': this.isAdmin
+      'role': this.role
     };
   });
 
@@ -63,10 +59,9 @@ UserSchema
 UserSchema
   .path('email')
   .validate(function(email) {
-    return email.length;
-  }, 'Email cannot be blank');
+    return validator.isEmail(email);
+  }, 'Email is invalid');
 
-// Validate empty password
 UserSchema
   .path('hashedPassword')
   .validate(function(hashedPassword) {
@@ -77,7 +72,7 @@ UserSchema
 UserSchema
   .path('email')
   .validate(function(value, respond) {
-    var self = this;
+    let self = this;
     this.constructor.findOne({email: value}, function(err, user) {
       if(err) throw err;
       if(user) {
@@ -88,7 +83,7 @@ UserSchema
     });
 }, 'The specified email address is already in use.');
 
-var validatePresenceOf = function(value) {
+let validatePresenceOf = function(value) {
   return value && value.length;
 };
 
@@ -120,6 +115,10 @@ UserSchema.methods = {
     return this.encryptPassword(plainText) === this.hashedPassword;
   },
 
+  getSafeUserObject: function(mongooseUserObj) {
+    return _.omit(JSON.parse(JSON.stringify(mongooseUserObj)), ['salt', 'hashedPassword', 'token', 'profile', 'email_connections']);
+  },
+
   /**
    * Make salt
    *
@@ -139,7 +138,7 @@ UserSchema.methods = {
    */
   encryptPassword: function(password) {
     if (!password || !this.salt) return '';
-    var salt = new Buffer(this.salt, 'base64');
+    let salt = new Buffer(this.salt, 'base64');
     return crypto.pbkdf2Sync(password, salt, 10000, 64).toString('base64');
   }
 };

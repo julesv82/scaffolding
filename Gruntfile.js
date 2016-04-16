@@ -12,7 +12,7 @@ module.exports = function (grunt) {
   // Load grunt tasks automatically, when needed
   require('jit-grunt')(grunt, {
     express: 'grunt-express-server',
-    protractor: 'grunt-protractor-runner',
+    protractor: 'grunt-protractor-runner'
   });
 
   // Time how long tasks take. Can help when optimizing build times
@@ -20,30 +20,6 @@ module.exports = function (grunt) {
 
   // Define the configuration for all the tasks
   grunt.initConfig({
-
-    // Make sure code styles are up to par and there are no obvious mistakes
-    jshint: {
-      options: {
-        jshintrc: 'client/.jshintrc',
-        reporter: require('jshint-stylish')
-      },
-      server: {
-        options: {
-          jshintrc: 'server/.jshintrc'
-        },
-        src: ['server/**/!(*.spec|*.integration).js']
-      },
-      serverTest: {
-        options: {
-          jshintrc: 'server/.jshintrc-spec'
-        },
-        src: ['server/**/*.{spec,integration}.js']
-      },
-      all: ['client/{app,components}/**/!(*.spec|*.mock).js'],
-      test: {
-        src: ['client/{app,components}/**/*.{spec,mock}.js']
-      }
-    },
 
     watch: {
       injectJS: {
@@ -59,15 +35,15 @@ module.exports = function (grunt) {
       },
       jsTest: {
         files: ['client/{app,components}/**/*.{spec,mock}.js'],
-        tasks: ['newer:jshint:all', 'wiredep:test', 'karma']
+        tasks: ['wiredep:test', 'karma']
       },
       gruntfile: {
         files: ['Gruntfile.js']
       },
       livereload: {
         files: [
-          '{client}/{app,components}/**/*.{css,html}',
-          '{client}/{app,components}/**/!(*.spec|*.mock).js',
+          'client/{app,components}/**/*.{css,html}',
+          'client/{app,components}/**/!(*.spec|*.mock).js',
           'client/assets/images/{,*//*}*.{png,jpg,jpeg,gif,webp,svg}'
         ],
         options: {
@@ -81,6 +57,16 @@ module.exports = function (grunt) {
           livereload: true,
           spawn: false //Without this option specified express won't be reloaded
         }
+      }
+    },
+
+    filerev: {
+      dist: {
+        src: [
+          'client/!(bower_components){,*/}*.{js,css}',
+          'client/assets/images/{,*/}*.{png,jpg,jpeg,gif,webp,svg}',
+          'client/assets/fonts/*'
+        ]
       }
     },
 
@@ -130,15 +116,6 @@ module.exports = function (grunt) {
       }
     },
 
-    // Renames files for browser caching purposes
-    filerev: {
-      dist: {
-        src: [
-          '<%= yeoman.dist %>/client/!(bower_components){,*/}*.{js,css}',
-        ]
-      }
-    },
-
     mochaTest: {
       options: {
         reporter: 'spec',
@@ -147,6 +124,13 @@ module.exports = function (grunt) {
       },
       unit: {
         src: ['server/**/*.spec.js']
+      }
+    },
+
+    karma: {
+      unit: {
+        configFile: 'karma.conf.js',
+        singleRun: true
       }
     },
 
@@ -174,9 +158,59 @@ module.exports = function (grunt) {
     },
 
     injector: {
-      options: {},
-      // Inject application script files into index.html (doesn't include bower)
-    },
+      scripts: {
+        options: {
+          transform: function(filePath) {
+            var yoClient = 'client';
+            filePath = filePath.replace('/' + yoClient + '/', '');
+            return '<script src="' + filePath + '"></script>';
+          },
+          sort: function(a, b) {
+            var module = /\.module\.js$/;
+            var aMod = module.test(a);
+            var bMod = module.test(b);
+            // inject *.module.js first
+            return (aMod === bMod) ? 0 : (aMod ? -1 : 1);
+          },
+          starttag: '<!-- injector:js -->',
+          endtag: '<!-- endinjector -->'
+        },
+        files: {
+          'client/index.html': [
+            [
+             'client/{app,components}/**/!(*.spec|*.mock).js',
+             '!{.tmp,client}/app/app.{js,ts}'
+            ]
+          ]
+        }
+      }
+    }
+
+  });
+
+
+  grunt.registerTask('test', function(target) {
+    if (target === 'server') {
+      return grunt.task.run([
+        'env:all',
+        'env:test',
+        'injector:scripts',
+        'mochaTest'
+      ]);
+    }
+
+    else if (target === 'client') {
+      return grunt.task.run([
+        'env:all',
+        'injector:scripts',
+        'karma'
+      ]);
+    }
+
+    else grunt.task.run([
+      'test:server',
+      'test:client'
+    ]);
   });
 
   grunt.registerTask('wait', function () {
@@ -191,6 +225,9 @@ module.exports = function (grunt) {
   });
 
   grunt.registerTask('default', [
+    'env:all',
+    'injector',
+    'wiredep:client',
     'express:dev',
     'wait',
     'open',

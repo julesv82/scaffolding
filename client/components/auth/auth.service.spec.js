@@ -1,151 +1,60 @@
 "use strict";
 
-var config = require('../../../shared/config'),
-  $httpBackend,
-  User;
+
+var $cookies,
+    $httpBackend,
+    User,
+    adminUser = {
+          name: 'Fake User',
+          email: 'test@test.com',
+          password: 'password',
+          role: 'admin'
+        };
 
 describe("auth service; factory", function () {
-  beforeEach(angular.mock.module('bbcItcApp'));
+  beforeEach(angular.mock.module('userAuthApp'));
 
 	beforeEach(
 		angular.mock.module(function($provide) {
 			$provide.factory('Auth', function() {
-				var u = {
-					provider: 'local',
-					name: 'Fake User',
-					email: 'test@test.com',
-					password: 'password',
-					roles:['itc']
-				};
 				return {
 					getCurrentUser : jasmine.createSpy('getCurrentUser').andCallFake(function(num) {
-						return u;
+						return adminUser;
 					}),
-					currentUser: u
+					currentUser: adminUser
 				};
 			});
 		})
 	);
 
-  beforeEach(angular.mock.inject(
-    (_$httpBackend_, _User_) => {
+  beforeEach(angular.mock.inject(function(_$httpBackend_, _User_, _$cookies_){
       $httpBackend = _$httpBackend_;
+      $cookies = $cookies;
       User = _User_;
-
+      console.log($cookies)
       $httpBackend.whenGET('app/account/login/login.html').respond(200);
       $httpBackend.whenGET('app/dashboard/dashboard.html').respond(200);
-      $httpBackend.whenGET('api/configs/all').respond(config);
     })
   );
 
 	describe('User.get()', function () {
 		it('should call getUser with username', function () {
 			$httpBackend.whenGET('api/users/me')
-				.respond({
-				provider: 'local',
-				name: 'Fake User',
-				email: 'test@test.com',
-				password: 'password',
-				roles:['guest']
-			});
+				.respond(adminUser);
 
 			var result = User.get();
 			$httpBackend.flush();
 			expect(result).toBeDefined();
-			expect(result.roles[0]).toEqual('guest');
+			expect(result.role).toEqual('admin');
 		});
-	});
+  });
 
+  describe('Login', function(){
+    it('should add a token to the cookies', function(){
 
-	// // function Auth($location, $rootScope, $http, User, $cookieStore, $q) {
-	// Factory of interest is called MyFactory
-	describe('factory: Auth', function() {
-		var factory = null;
-		beforeEach(inject(function(Auth) {
-			factory = Auth;
-		}));
-
-
-		//Getting reference of the mocked service
-//		it('cannot access currentUser Externally', function(){
-//			factory.isAdmin();
-//		});
-
-		it('Should define methods', function() {
-			expect(factory.getCurrentUser).toBeDefined()
-			expect(factory.getCurrentUser).toEqual(jasmine.any(Function))
-		});
-	});
-
-	describe("role identification in a factory: Auth", function(){
-		angular.mock.module(function($provide) {
-			$provide.factory('Auth', function() {
-				return this.getCurrentUser = jasmine.createSpy('getCurrentUser').andCallFake(function(num) {
-					return {
-						provider: 'local',
-						name: 'Fake User',
-						email: 'test@test.com',
-						password: 'password',
-						roles:['guest']
-					};
-				});
-			});
-		});
-	});
-});
-
-/*
-
-describe('getCustomers', function () {
-			it("should return a list of customers", inject(function () {
-				factory
-				_httpBackend.expectGET('/Home/Customers').respond(['david', 'James', 'Sam']);
-				_service.getCustomers(function (result) {
-					expect(result).toEqual(["david", "James", "Sam"]);
-				});
-				_httpBackend.flush();
-			}))
-		});
-
-		var Auth, _httpBackend;
-		beforeEach(function () {
-			angular.mock.inject(function ($injector) {
-				_httpBackend = $injector.get('$httpBackend');
-				Auth = $injector.get('Auth');
-				_cookieStore = $injector.get('$cookieStore');
-			})
-		});
-
-
-
-describe("auth service; factory", function () {
-  var redditService, httpBackend;
-
-  beforeEach(module("bbcItcApp"));
-
-	 // Factory of interest is called MyFactory
-  describe('factory: Auth', function() {
-    var factory = null;
-    beforeEach(inject(function(Auth) {
-      factory = Auth;
-    }));
-		  var $controller;
-  beforeEach(inject(function(_$controller_) {
-    $controller = _$controller_;
-  }));
-    it('Should define methods', function() {
-      expect(factory.beAwesome).toBeDefined()
-      expect(factory.beAwesome).toEqual(jasmine.any(Function))
     });
   });
 
-	// Setup the mock service in an anonymous module.
-  beforeEach(module(function ($provide) {
-    $provide.value('Auth', {
-        someVariable: 1
-    });
-  }));
-
 });
 
-*/
+

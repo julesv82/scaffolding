@@ -1,0 +1,10 @@
+<div ng-show="header.showUserName()">
+  <h5><a title="Dashboard" ui-sref="dashboard" class="navigation-tabs__item">Dashboard</a></h5>
+  <h5 ng-click="header.logout()">Logout</h5>
+  <h5>Welcome, {{header.currentUser.name}}</h5>
+</div>
+
+<div ng-hide="header.showUserName()">
+  <h5><a title="Login" ui-sref="login">Login</a></h5>
+  <h5><a title="Signup" ui-sref="signup">Signup</a></h5>
+</div>

@@ -1,24 +1,27 @@
 'use strict';
 
 angular.module('userAuthApp')
-  .controller('LoginCtrl', function (Auth, $location, $scope) {
+  .controller('SignupCtrl', function ($scope, Auth, $location) {
     var vm = this;
     vm.user = {};
 
-    vm.login = function(form) {
+    vm.register = function(form) {
       vm.submitted = true;
 
       if(form.$valid) {
-        Auth.login({
+        Auth.createUser({
+          name: vm.user.name,
           email: vm.user.email,
           password: vm.user.password
         })
-        .then( function(user) {
-          // Logged in, redirect to home
+        .then( function() {
+          // Account created, redirect to home
           $location.path('/');
         })
         .catch( function(err) {
-          vm.errors = err.message;
+          err = err.data;
+          vm.errors = {};
+          console.log(err);
         });
       }
     };
