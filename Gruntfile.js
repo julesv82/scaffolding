@@ -235,4 +235,10 @@ module.exports = function (grunt) {
     'watch'
   ]);
 
+  grunt.registerTask('build', [
+    'env:all',
+    'injector',
+    'wiredep:client',
+  ])
+
 };
