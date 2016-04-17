@@ -29,7 +29,6 @@ function seed(callback) {
         console.log('ERROR SEEDING...', err)
         callback(err)
       } else {
-        console.log('SEEDING FINISHED SUCCESSFULLY');
         callback();
       }
     })

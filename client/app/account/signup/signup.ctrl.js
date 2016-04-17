@@ -21,7 +21,6 @@ angular.module('userAuthApp')
         .catch( function(err) {
           err = err.data;
           vm.errors = {};
-          console.log(err);
         });
       }
     };

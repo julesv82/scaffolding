@@ -4,8 +4,9 @@ var express = require('express');
 var controller = require('./user.controller');
 var config = require('../../config/environment');
 var AuthService = require('../../auth/auth.service');
+var User = require('./user.model');
 
-let auth = AuthService();
+let auth = AuthService(User);
 var router = express.Router();
 
 router.get('/', auth.hasRole('admin'), controller.index);

@@ -19,7 +19,7 @@ angular.module('userAuthApp')
       login: function(user) {
         var deferred = $q.defer();
 
-        $http.post('/auth/local', {
+        $http.post('auth/local', {
           email: user.email,
           password: user.password
         })
@@ -87,7 +87,11 @@ angular.module('userAuthApp')
       /**
        * Waits for currentUser to resolve before checking if user is logged in
        */
-      getCurrentUser: function() {
+      requestCurrentUser: function() {
+        return User.get();
+      },
+
+      getCurrentUser: function(){
         return currentUser;
       }
     };

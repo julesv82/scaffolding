@@ -10,6 +10,6 @@ angular.module('userAuthApp')
 
     vm.showUserName = function(){
       vm.currentUser = Auth.getCurrentUser();
-      return Auth.getCurrentUser().name;
+      return Auth.isLoggedIn();
     }
   });

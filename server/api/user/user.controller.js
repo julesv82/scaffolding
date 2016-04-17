@@ -5,6 +5,7 @@ var auth = require('../../auth/auth.service')();
 let async = require('async');
 let _ = require('lodash');
 
+
 var validationError = function(res, err) {
   console.log(err);
   return res.status(422).json(err);

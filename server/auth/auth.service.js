@@ -6,13 +6,12 @@ var config = require('../config/environment');
 var jwt = require('jsonwebtoken');
 var expressJwt = require('express-jwt');
 var compose = require('composable-middleware');
-var User = require('../api/user/user.model');
 var validateJwt = expressJwt({ secret: config.secrets.session });
 var _ = require('lodash');
 
 var allowedRoles = config.allowedRoles;
 
-module.exports = function() {
+module.exports = function(User) {
   /**
    * Attaches the user object to the request if authenticated
    * Otherwise returns 403
