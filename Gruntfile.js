@@ -203,6 +203,7 @@ module.exports = function (grunt) {
       return grunt.task.run([
         'env:all',
         'injector:scripts',
+        'wiredep:test',
         'karma'
       ]);
     }

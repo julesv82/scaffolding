@@ -11,19 +11,23 @@ module.exports = function(config) {
 
     // list of files / patterns to load in the browser
     files: [
-      // 'client/test/init.client.spec.js',
-      'client/bower_components/jquery/dist/jquery.js',
+      // bower:js
       'client/bower_components/angular/angular.js',
-      'client/bower_components/angular-mocks/angular-mocks.js',
-      'client/bower_components/angular-resource/angular-resource.js',
+      'client/bower_components/angular-animate/angular-animate.js',
+      'client/bower_components/angular-busy/dist/angular-busy.js',
       'client/bower_components/angular-cookies/angular-cookies.js',
+      'client/bower_components/angular-filter/dist/angular-filter.min.js',
+      'client/bower_components/angular-resource/angular-resource.js',
       'client/bower_components/angular-sanitize/angular-sanitize.js',
-      'client/bower_components/lodash/lodash.js',
       'client/bower_components/angular-socket-io/socket.js',
+      'client/bower_components/angular-toastr/dist/angular-toastr.tpls.js',
       'client/bower_components/angular-ui-router/release/angular-ui-router.js',
-      'client/bower_components/angular-ui-bootstrap-bower/ui-bootstrap-tpls.js',
-      'client/bower_components/angular-toastr/dist/angular-toastr.js',
-      'client/bower_components/angular-busy/angular-busy.js',
+      'client/bower_components/jquery/dist/jquery.js',
+      'client/bower_components/lodash/lodash.js',
+      'client/bower_components/moment/moment.js',
+      'client/bower_components/angular-mocks/angular-mocks.js',
+      'client/bower_components/angular-scenario/angular-scenario.js',
+      // endbower
       'client/app/app.js',
       'client/app/**/*.js',
       'client/components/**/*.js',
@@ -34,35 +38,6 @@ module.exports = function(config) {
     preprocessors: {
       '**/*.html': ['ng-html2js']
     },
-
-    // browserify: {
-    //   debug: true,
-    //   watch: true,
-    //   transform: ['babelify']
-    // },
-
-    // ngHtml2JsPreprocessor: {
-    //   stripPrefix: 'client/'
-    // },
-
-    // ngJade2JsPreprocessor: {
-    //   stripPrefix: 'client/'
-    // },
-
-
-    // babelPreprocessor: {
-    //   base: 'babel',
-    //   options: {
-    //     presets: ['es2015'],
-    //     sourceMap: 'inline'
-    //   },
-    //   filename: function (file) {
-    //     return file.originalPath.replace(/\.js$/, '.es5.js');
-    //   },
-    //   sourceFileName: function (file) {
-    //     return file.originalPath;
-    //   }
-    // },
 
     plugins: [
       'karma-jasmine',
