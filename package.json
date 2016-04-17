@@ -2,7 +2,8 @@
   "name": "userauth",
   "version": "1.0.0",
   "scripts": {
-    "postinstall": "./node_modules/grunt-cli/bin/grunt serve"
+    "start": "./server/app.js",
+    "postinstall": "./node_modules/grunt-cli/bin/grunt"
   },
   "author": "Julian Veling",
   "dependencies": {
