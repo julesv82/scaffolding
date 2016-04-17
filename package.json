@@ -2,7 +2,7 @@
   "name": "userauth",
   "version": "1.0.0",
   "scripts": {
-    "start": "node_modules/grunt-cli/bin/grunt serve"
+    "start": "./node_modules/grunt-cli/bin/grunt serve"
   },
   "author": "Julian Veling",
   "dependencies": {
