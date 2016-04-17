@@ -1,7 +1,7 @@
 # userauth
 
 Run `grunt test` for tests.
-Run `grunt serve` to launch app.
+Run `grunt` to launch app.
 https://rocky-brook-96127.herokuapp.com
 
 Login as
