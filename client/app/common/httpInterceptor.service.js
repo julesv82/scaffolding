@@ -1,5 +1,5 @@
 angular.module('userAuthApp')
-  .factory('httpInterceptorSvc', ($rootScope, $q) => {
+  .factory('httpInterceptor', ($rootScope, $q) => {
     var promises = [],
         promisesMap = {}
 
@@ -18,7 +18,7 @@ angular.module('userAuthApp')
 
         deferred.resolve();
         promises.splice(promiseIdx, 1);
-        delete _promisesMap[url];
+        delete promisesMap[url];
         notify();
       }
     }
@@ -29,6 +29,7 @@ angular.module('userAuthApp')
 
     return {
       request: function (config) {
+        console.log(config)
         addPromise(config.url);
         return config;
       },

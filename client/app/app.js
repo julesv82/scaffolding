@@ -12,6 +12,7 @@ angular.module('userAuthApp', [
     $urlRouterProvider.otherwise('/dashboard');
     $locationProvider.html5Mode(true);
     $httpProvider.interceptors.push('authInterceptor');
+    $httpProvider.interceptors.push('httpInterceptor');
   })
 
   .factory('authInterceptor', function ($rootScope, $q, $cookies, $location) {

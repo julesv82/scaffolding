@@ -1,22 +1,21 @@
 'use strict';
 
 angular.module('userAuthApp')
-  .controller('MainCtrl', function ($scope) {
+  .controller('MainCtrl', function ($rootScope, $timeout) {
     var vm = this;
 
     vm.spinnerOptions = {
       backdrop: true,
       message: 'Please wait...',
-      promise: [],
-      minDuration: 100
+      promise: []
     };
 
-    $scope.$on('event:httpInterceptorSvc.promises.change', (event, promises) => {
+    $rootScope.$on('event:httpInterceptorSvc.promisesChange', (event, promises) => {
       // force to update the spinner
       delete vm.spinnerOptions.promise;
 
       $timeout(function () {
-        $scope.spinnerOptions.promise = promises;
+        vm.spinnerOptions.promise = promises;
       }, 0);
     });
 
