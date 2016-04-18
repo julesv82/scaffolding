@@ -238,8 +238,7 @@ module.exports = function (grunt) {
   grunt.registerTask('build', [
     'env:all',
     'injector',
-    'wiredep:client',
-    'express:dev'
+    'wiredep:client'
   ])
 
 };
