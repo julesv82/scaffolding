@@ -82,7 +82,7 @@ module.exports = function (grunt) {
       },
       prod: {
         options: {
-          script: 'dist/server'
+          script: 'server/app.js'
         }
       }
     },

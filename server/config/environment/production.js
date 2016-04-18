@@ -22,5 +22,6 @@ module.exports = {
   },
   socket: {
     uri: ''
-  }
+  },
+  seedDb: true
 };
