@@ -13,16 +13,16 @@
   <h4>Registered Users</h4>
   <ul>
     <li ng-repeat="user in dashboard.users track by $index">
-      <ul>
-        <li>{{user.name}}</li>
+      <ul class="first-indent">
+        <li class="user-name">{{user.name}}</li>
+        Is connected to:
         <li ng-show="user.connections" ng-repeat="connection in user.connections">
-          Is connected to:
-          <ul>
+          <ul class="second-indent">
             <li>{{connection.name}}</li>
             <li>{{connection.email}}
           </ul>
         </li>
-        <button ng-hide="dashboard.isConnected(user._id)" ng-click="dashboard.connect(user._id)">Connect</a></button>
+        <button ng-hide="dashboard.isConnected(user._id)" ng-click="dashboard.connect(user._id)">Connect with {{user.name}}</a></button>
       </ul>
     </li>
   </ul>

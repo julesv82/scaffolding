@@ -5817,10 +5817,19 @@ input {
   margin: 5px; }
 
 #dashboard ul {
-  margin-bottom: 15px; }
+  margin-bottom: 15px;
+  padding-left: 5px; }
+#dashboard ul.first-indent {
+  padding-left: 10px; }
+#dashboard ul.second-indent {
+  padding-left: 15px; }
 #dashboard li {
   list-style-type: none; }
+#dashboard .user-name {
+  font-size: 20px; }
 
+header ul {
+  padding-left: 0px; }
 header li {
   display: inline-block;
   list-style: none;

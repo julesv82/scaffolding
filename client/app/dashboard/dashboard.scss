@@ -1,8 +1,18 @@
 #dashboard {
   ul{
     margin-bottom: 15px;
+    padding-left: 5px;
+  }
+  ul.first-indent{
+    padding-left: 10px;
+  }
+  ul.second-indent {
+    padding-left: 15px;
   }
   li{
     list-style-type: none;
+  }
+  .user-name{
+    font-size: 20px;
   }
 }
