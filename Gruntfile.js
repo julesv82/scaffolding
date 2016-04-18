@@ -284,8 +284,6 @@ module.exports = function (grunt) {
   grunt.registerTask('build', [
     'env:all',
     'injector:scripts',
-    'injector:sass',
-    'sass',
     'wiredep:client'
   ])
 
