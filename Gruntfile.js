@@ -239,6 +239,7 @@ module.exports = function (grunt) {
     'env:all',
     'injector',
     'wiredep:client',
+    'express:dev'
   ])
 
 };
