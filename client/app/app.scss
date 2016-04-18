@@ -1,0 +1,9 @@
+@import 'bootstrap-sass-official/assets/stylesheets/bootstrap';
+
+@import '../assets/global.scss';
+
+// injector
+@import 'account/account.scss';
+@import 'dashboard/dashboard.scss';
+@import 'header/header.scss';
+// endinjector

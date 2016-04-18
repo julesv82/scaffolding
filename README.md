@@ -2,12 +2,11 @@
 
 Run `grunt test` for tests.
 Run `grunt` to launch app.
-https://rocky-brook-96127.herokuapp.com
+Version deployed on https://rocky-brook-96127.herokuapp.com
 
 Login as
 
 Admin:
-
 walter.white@test.com
 walterwhite2016
 

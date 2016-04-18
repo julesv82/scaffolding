@@ -29,7 +29,6 @@ angular.module('userAuthApp')
 
     return {
       request: function (config) {
-        console.log(config)
         addPromise(config.url);
         return config;
       },

@@ -1,4 +1,4 @@
-<div ng-show="dashboard.isLoggedIn()">
+<div id="dashboard" ng-show="dashboard.isLoggedIn()">
   <h1>Dashboard</h1>
   <h5 ng-show="dashboard.error">{{dashboard.error}}</h5>
   <h4 ng-show="dashboard.currentUser.connections.length > 0">You are connected to:</h4>
@@ -22,7 +22,7 @@
             <li>{{connection.email}}
           </ul>
         </li>
-        <a ng-hide="dashboard.isConnected(user._id)" ng-click="dashboard.connect(user._id)">Connect</a>
+        <button ng-hide="dashboard.isConnected(user._id)" ng-click="dashboard.connect(user._id)">Connect</a></button>
       </ul>
     </li>
   </ul>

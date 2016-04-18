@@ -37,6 +37,16 @@ module.exports = function (grunt) {
         files: ['client/{app,components}/**/*.{spec,mock}.js'],
         tasks: ['wiredep:test', 'karma']
       },
+      injectSass: {
+        files: [
+          'client/{app,components}/**/*.scss'],
+        tasks: ['injector:sass']
+      },
+      sass: {
+        files: [
+          'client/{app,components}/**/*.scss'],
+        tasks: ['sass']
+      },
       gruntfile: {
         files: ['Gruntfile.js']
       },
@@ -183,8 +193,44 @@ module.exports = function (grunt) {
             ]
           ]
         }
+      },
+      // Inject component scss into app.scss
+      sass: {
+        options: {
+          transform: function(filePath) {
+
+            console.log(filePath)
+            filePath = filePath.replace('/client/app/', '');
+            filePath = filePath.replace('/client/components/', '');
+            return '@import \'' + filePath + '\';';
+          },
+          starttag: '// injector',
+          endtag: '// endinjector'
+        },
+        files: {
+          'client/app/app.scss': [
+            'client/{app,components}/**/*.scss',
+            '!client/app/app.scss'
+          ]
+        }
       }
-    }
+    },
+    sass: {
+      server: {
+        options: {
+          loadPath: [
+            'client/bower_components',
+            'client/app',
+            'client/components',
+            'client/assets'
+          ],
+          compass: false
+        },
+        files: {
+          'client/app/app.css' : 'client/app/app.scss'
+        }
+      }
+    },
 
   });
 
@@ -237,7 +283,9 @@ module.exports = function (grunt) {
 
   grunt.registerTask('build', [
     'env:all',
-    'injector',
+    'injector:scripts',
+    'injector:sass',
+    'sass',
     'wiredep:client'
   ])
 
