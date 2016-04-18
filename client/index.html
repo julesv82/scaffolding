@@ -20,14 +20,18 @@
     <link rel="stylesheet" href="app/app.css">
 
   </head>
-  <body ng-app="userAuthApp">
+  <body ng-app="userAuthApp" ng-controller="MainCtrl">
     <!--[if lt IE 7]>
       <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
     <![endif]-->
     <header ng-controller="HeaderCtrl as header">
       <navbar ng-include="'components/header/header.html'"></navbar>
     </header>
-    <div ui-view=""></div>
+
+    <div ui-view=""
+         cg-busy="spinnerOptions">
+    </div>
+
     <footer></footer>
 
     <!--[if lt IE 9]>
@@ -52,12 +56,14 @@
     <!-- endbower -->
     <script src="app/app.js"></script>
     <!-- injector:js -->
-    <script src="app/account/account.js"></script>
-    <script src="app/account/login/login.ctrl.js"></script>
-    <script src="app/account/signup/signup.ctrl.js"></script>
-    <script src="app/dashboard/dashboard.ctrl.js"></script>
     <script src="app/dashboard/dashboard.js"></script>
+    <script src="app/account/account.js"></script>
+    <script src="app/account/signup/signup.ctrl.js"></script>
+    <script src="app/common/httpInterceptor.service.js"></script>
+    <script src="app/dashboard/dashboard.ctrl.js"></script>
+    <script src="app/account/login/login.ctrl.js"></script>
     <script src="app/dashboard/dashboard.service.js"></script>
+    <script src="app/main.ctrl.js"></script>
     <script src="components/auth/auth.service.js"></script>
     <script src="components/auth/user.service.js"></script>
     <script src="components/header/header.ctrl.js"></script>

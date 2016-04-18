@@ -4,7 +4,8 @@ angular.module('userAuthApp', [
   'ngCookies',
   'ngResource',
   'ngSanitize',
-  'ui.router'
+  'ui.router',
+  'cgBusy'
 ])
   .constant('_', window._) // lodash
   .config(function ($stateProvider, $urlRouterProvider, $locationProvider, $httpProvider) {
